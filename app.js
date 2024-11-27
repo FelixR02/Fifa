@@ -17,6 +17,7 @@ const sequelize = require("./helpers/database.js");
 // Importaciones de los modelos 
 const Teams = require("./models/teams"); 
 const Players = require("./models/players");
+const Tournaments = require("./models/tournaments.js")
 
 
 // Sincronizar los modelos para verificar la conexión con la base de datos
