@@ -1,13 +1,13 @@
 const express = require("express")
 const app = express()
 const playersRoutes = require("./rutas/playersRoutes.js")
-
-const tournamentsRouter = require("./rutas/tournamentsRoutes.js")
+const teamsRoutes = require("./rutas/teamsRoutes.js")
+const tournamentsRoutes = require("./rutas/tournamentsRoutes.js")
 
 app.use(express.json())
 app.use('/players', playersRoutes)
-
-app.use('/tournaments',tournamentsRouter)
+app.use('/teams', teamsRoutes)
+app.use('/tournaments',tournamentsRoutes)
 
 app.get("/",(req,res) =>{
     res.send("Hola, mundo")

@@ -1,4 +1,4 @@
-const Teams = require("./teams");
+const Teams = require("../models/teams");
 
 // Add new team
 async function addTeam(data) {
