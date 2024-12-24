@@ -5,6 +5,11 @@ const teamsRoutes = require("./rutas/teamsRoutes.js")
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js")
 
 app.use(express.json())
+
+//Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+//rutas
 app.use('/players', playersRoutes)
 app.use('/teams', teamsRoutes)
 app.use('/tournaments',tournamentsRoutes)
