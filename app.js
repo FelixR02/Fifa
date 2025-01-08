@@ -5,7 +5,6 @@ const app = express();
 const playersRoutes = require("./rutas/playersRoutes.js");
 const teamsRoutes = require("./rutas/teamsRoutes.js");
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js");
-
 app.use(express.json());
 
 // Configuración de Swagger
@@ -15,7 +14,7 @@ const swaggerOptions = {
         info: {
             title: "API FutbolStats",
             version: "1.0.0",
-            description: "Documentación de la API",
+            description: "Documentation of the API",
         },
         servers: [
             {
@@ -23,7 +22,7 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: ["./rutas/*.js"], // Rutas donde se encuentran las definiciones de las API
+    apis: ["./rutas/*.js","./models/*.js"], // Rutas donde se encuentran las definiciones de las API
 };
 
 const swaggerSpec = swaggerJsDoc(swaggerOptions);

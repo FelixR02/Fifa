@@ -2,7 +2,38 @@ const express = require('express');
 const router = express.Router();
 const teamsController = require('../controladores/teamsController');
 
-// Ruta para agregar un nuevo equipo
+/**
+ * @swagger
+ * tags:
+ *   name: Teams
+ *   description: API to manage teams
+ */
+
+/**
+ * @swagger
+ * /teams:
+ *   post:
+ *     summary: Add a new team
+ *     tags: [Teams]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               team_name:
+ *                 type: string
+ *               estadium_name:
+ *                 type: string
+ *               capacity:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Team created successfully
+ *       400:
+ *         description: Bad request
+ */
 router.post('/', async (req, res) => {
     try {
         const team = await teamsController.addTeam(req.body);
@@ -12,7 +43,18 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Ruta para obtener todos los equipos
+/**
+ * @swagger
+ * /teams:
+ *   get:
+ *     summary: Get all teams
+ *     tags: [Teams]
+ *     responses:
+ *       200:
+ *         description: List of teams
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/', async (req, res) => {
     try {
         const teams = await teamsController.getTeams();
@@ -22,7 +64,25 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Ruta para obtener un equipo por ID
+/**
+ * @swagger
+ * /teams/{id}:
+ *   get:
+ *     summary: Get a team by ID
+ *     tags: [Teams]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the team
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Team found
+ *       404:
+ *         description: Team not found
+ */
 router.get('/:id', async (req, res) => {
     try {
         const team = await teamsController.getTeamForId(req.params.id);
@@ -32,7 +92,40 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Ruta para actualizar un equipo
+/**
+ * @swagger
+ * /teams/{id}:
+ *   put:
+ *     summary: Update a team
+ *     tags: [Teams]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the team
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               team_name:
+ *                 type: string
+ *               estadium_name:
+ *                 type: string
+ *               capacity:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Team updated successfully
+ *       404:
+ *         description: Team not found
+ *       400:
+ *         description: Bad request
+ */
 router.put('/:id', async (req, res) => {
     try {
         const team = await teamsController.updateTeam(req.params.id, req.body);
@@ -46,7 +139,25 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Ruta para eliminar un equipo
+/**
+ * @swagger
+ * /teams/{id}:
+ *   delete:
+ *     summary: Delete a team
+ *     tags: [Teams]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the team
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Team deleted successfully
+ *       404:
+ *         description: Team not found
+ */
 router.delete('/:id', async (req, res) => {
     try {
         await teamsController.deleteTeam(req.params.id);
