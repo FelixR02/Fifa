@@ -2,6 +2,7 @@ const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const app = express();
+const cors = require("cors")
 const playersRoutes = require("./rutas/playersRoutes.js");
 const teamsRoutes = require("./rutas/teamsRoutes.js");
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js");
@@ -29,6 +30,35 @@ const swaggerSpec = swaggerJsDoc(swaggerOptions);
 
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
+//Cors whith corsOptions
+app.use(cors(corsOptions))
+
+//configuracion
+const allowedOrigins =  ["http://localhost:3000"];
+app.use(
+    cors({
+        origin allowedOrigins
+        methods: ['GET', 'POST', 'PUT','DELETE'],
+        credentials: true, //Permitir el envio de cookies
+    })
+);
+    
+function verificarAutenticacion(req, res, next) {
+    if(usuarioAutenticado){
+        next();
+    } else {
+        res.status(401).send("No estás autenticado")
+    }
+}
+
+app.use(verificarAutenticacion)
+
+//ruta protegida
+app.get("/pagina-protegida", (req,res)=> {
+    res.send("Bienvenido a a página protegida");
+});
 
 // Rutas
 app.use('/players', playersRoutes);

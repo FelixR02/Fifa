@@ -6,6 +6,7 @@
   "author": "FelixR02 <rodriguezutrerafelixalberto02@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "nodemon": "^3.1.7",
