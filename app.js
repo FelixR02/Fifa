@@ -2,7 +2,8 @@ const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const app = express();
-const cors = require("cors")
+const cors = require("cors");
+const morgan = require('morgan');
 const playersRoutes = require("./rutas/playersRoutes.js");
 const teamsRoutes = require("./rutas/teamsRoutes.js");
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js");
@@ -23,7 +24,7 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: ["./rutas/*.js","./models/*.js"], // Rutas donde se encuentran las definiciones de las API
+    apis: ["./rutas/*.js", "./models/*.js"], // Rutas donde se encuentran las definiciones de las API
 };
 
 const swaggerSpec = swaggerJsDoc(swaggerOptions);
@@ -31,33 +32,38 @@ const swaggerSpec = swaggerJsDoc(swaggerOptions);
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
-//Cors whith corsOptions
-app.use(cors(corsOptions))
-
-//configuracion
-const allowedOrigins =  ["http://localhost:3000"];
+// Configuración de CORS
+const allowedOrigins = ["http://localhost:3000"];
 app.use(
     cors({
-        origin allowedOrigins
-        methods: ['GET', 'POST', 'PUT','DELETE'],
-        credentials: true, //Permitir el envio de cookies
+        origin: allowedOrigins,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        credentials: true, // Permitir el envío de cookies
     })
 );
-    
+
 function verificarAutenticacion(req, res, next) {
-    if(usuarioAutenticado){
+    const usuarioAutenticado = req.isAuthenticated ? req.isAuthenticated() : false; // Ejemplo de verificación
+    if (usuarioAutenticado) {
         next();
     } else {
-        res.status(401).send("No estás autenticado")
+        res.status(401).send("No estás autenticado");
     }
 }
 
-app.use(verificarAutenticacion)
+app.use(verificarAutenticacion);
 
-//ruta protegida
-app.get("/pagina-protegida", (req,res)=> {
-    res.send("Bienvenido a a página protegida");
+// Ruta protegida
+app.get("/pagina-protegida", (req, res) => {
+    res.send("Bienvenido a la página protegida");
+});
+
+// Configura morgan para que registre las solicitudes en la consola
+app.use(morgan('dev')); // 'dev' es un formato de registro predefinido
+
+// Define una ruta de ejemplo
+app.get('/', (req, res) => {
+    res.send('¡Hola, mundo!');
 });
 
 // Rutas
