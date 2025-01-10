@@ -6,6 +6,7 @@ const cors = require("cors");
 const playersRoutes = require("./rutas/playersRoutes.js");
 const teamsRoutes = require("./rutas/teamsRoutes.js");
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js");
+const errorHandler = require("./middlewares/errorHandler.js");
 app.use(express.json());
 
 // Configuración de Swagger
@@ -57,13 +58,11 @@ app.get("/pagina-protegida", (req, res) => {
     res.send("Bienvenido a la página protegida");
 });
 
-// Configura morgan para que registre las solicitudes en la consola
-app.use(morgan('dev')); // 'dev' es un formato de registro predefinido
 
-// Define una ruta de ejemplo
-app.get('/', (req, res) => {
-    res.send('¡Hola, mundo!');
-});
+
+//Rutas y middlewares
+//Middleware manejo de errrores
+app.use(errorHandler);
 
 // Rutas
 app.use('/players', playersRoutes);
