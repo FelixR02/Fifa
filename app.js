@@ -3,7 +3,6 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const app = express();
 const cors = require("cors");
-const morgan = require('morgan');
 const playersRoutes = require("./rutas/playersRoutes.js");
 const teamsRoutes = require("./rutas/teamsRoutes.js");
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js");
