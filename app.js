@@ -6,6 +6,7 @@ const cors = require("cors");
 const playersRoutes = require("./rutas/playersRoutes.js");
 const teamsRoutes = require("./rutas/teamsRoutes.js");
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js");
+const usersRoutes = require("./rutas/usersRoutes.js")
 const errorHandler = require("./middlewares/errorHandler.js");
 app.use(express.json());
 
@@ -68,6 +69,7 @@ app.use(errorHandler);
 app.use('/players', playersRoutes);
 app.use('/teams', teamsRoutes);
 app.use('/tournaments', tournamentsRoutes);
+app.use('/users', usersRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hola, mundo");
