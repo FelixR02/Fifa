@@ -1,41 +1,136 @@
 const express = require('express');
 const router = express.Router();
-const usersController = require('../controladores/usersController'); // Asegúrate de que esta ruta sea correcta
+const usersController = require('../controladores/usersController');
 
-// Ruta para agregar un nuevo usuario
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: API for managing users
+ */
+
+/**
+ * @swagger
+ * /usuarios:
+ *   post:
+ *     summary: Add a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       400:
+ *         description: Bad request
+ */
 router.post('/usuarios', async (req, res) => {
     try {
-        const newUsuario = await usersController.addUsuario(req.body); // Cambia 'usuarioController' a 'usersController'
+        const newUsuario = await usersController.addUsuario(req.body);
         res.status(201).json(newUsuario);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 });
 
-// Ruta para obtener todos los usuarios
+/**
+ * @swagger
+ * /usuarios:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/usuarios', async (req, res) => {
     try {
-        const usuarios = await usersController.getUsuarios(); // Cambia 'usuarioController' a 'usersController'
+        const usuarios = await usersController.getUsuarios();
         res.status(200).json(usuarios);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Ruta para obtener un usuario por ID
+/**
+ * @swagger
+ * /usuarios/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the user
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: User found
+ *       404:
+ *         description: User not found
+ */
 router.get('/usuarios/:id', async (req, res) => {
     try {
-        const usuario = await usersController.getUsuarioForId(req.params.id); // Cambia 'usuarioController' a 'usersController'
+        const usuario = await usersController.getUsuarioForId(req.params.id);
         res.status(200).json(usuario);
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
 });
 
-// Ruta para actualizar un usuario
+/**
+ * @swagger
+ * /usuarios/{id}:
+ *   put:
+ *     summary: Update a user
+ *     tags: [Users]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the user
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       404:
+ *         description: User not found
+ *       400:
+ *         description: Bad request
+ */
 router.put('/usuarios/:id', async (req, res) => {
     try {
-        const updatedUsuario = await usersController.updateUsuario(req.params.id, req.body); // Cambia 'usuarioController' a 'usersController'
+        const updatedUsuario = await usersController.updateUsuario(req.params.id, req.body);
         if (updatedUsuario) {
             res.status(200).json(updatedUsuario);
         } else {
@@ -46,11 +141,29 @@ router.put('/usuarios/:id', async (req, res) => {
     }
 });
 
-// Ruta para eliminar un usuario
+/**
+ * @swagger
+ * /usuarios/{id}:
+ *   delete:
+ *     summary: Delete a user
+ *     tags: [Users]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the user
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: User deleted successfully
+ *       404:
+ *         description: User not found
+ */
 router.delete('/usuarios/:id', async (req, res) => {
     try {
-        await usersController.deleteUsuario(req.params.id); // Cambia 'usuarioController' a 'usersController'
-        res.status(204).send(); // No content
+        await usersController.deleteUsuario(req.params.id);
+        res.status(204).send();
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
