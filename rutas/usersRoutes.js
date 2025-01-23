@@ -24,14 +24,40 @@ const usersController = require('../controladores/usersController');
  *             properties:
  *               first_name:
  *                 type: string
+ *                 example: "John"
  *               last_name:
  *                 type: string
+ *                 example: "Doe"
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: "john.doe@example.com"
+ *               password:
+ *                 type: string
+ *                 example: "securepassword123"
  *     responses:
  *       201:
  *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 first_name:
+ *                   type: string
+ *                   example: "John"
+ *                 last_name:
+ *                   type: string
+ *                   example: "Doe"
+ *                 email:
+ *                   type: string
+ *                   example: "john.doe@example.com"
+ *                 rol:
+ *                   type: string
+ *                   enum: [usuario, administrador]
  *       400:
  *         description: Bad request
  */
@@ -46,6 +72,49 @@ router.post('/usuarios', async (req, res) => {
 
 /**
  * @swagger
+ * /login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "john.doe@example.com"
+ *               password:
+ *                 type: string
+ *                 example: "securepassword123"
+ *     responses:
+ *       200:
+ *         description: Token generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       400:
+ *         description: Bad request
+ */
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const resultado = await usersController.iniciarSesion(email, password);
+        res.status(200).json(resultado);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+/**
+ * @swagger
  * /usuarios:
  *   get:
  *     summary: Get all users
@@ -53,6 +122,25 @@ router.post('/usuarios', async (req, res) => {
  *     responses:
  *       200:
  *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 1
+ *                   first_name:
+ *                     type: string
+ *                     example: "John"
+ *                   last_name:
+ *                     type: string
+ *                     example: "Doe"
+ *                   email:
+ *                     type: string
+ *                     example: "john.doe@example.com"
  *       500:
  *         description: Internal server error
  */
@@ -81,6 +169,23 @@ router.get('/usuarios', async (req, res) => {
  *     responses:
  *       200:
  *         description: User found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 first_name:
+ *                   type: string
+ *                   example: "John"
+ *                 last_name:
+ *                   type: string
+ *                   example: "Doe"
+ *                 email:
+ *                   type: string
+ *                   example: "john.doe@example.com"
  *       404:
  *         description: User not found
  */
@@ -123,6 +228,23 @@ router.get('/usuarios/:id', async (req, res) => {
  *     responses:
  *       200:
  *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 first_name:
+ *                   type: string
+ *                   example: "John"
+ *                 last_name:
+ *                   type: string
+ *                   example: "Doe"
+ *                 email:
+ *                   type: string
+ *                   example: "john.doe@example.com"
  *       404:
  *         description: User not found
  *       400:

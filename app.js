@@ -1,13 +1,15 @@
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
-const app = express();
 const cors = require("cors");
+const jwt = require("jsonwebtoken"); // Importar jsonwebtoken
 const playersRoutes = require("./rutas/playersRoutes.js");
 const teamsRoutes = require("./rutas/teamsRoutes.js");
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js");
-const usersRoutes = require("./rutas/usersRoutes.js")
+const usersRoutes = require("./rutas/usersRoutes.js");
 const errorHandler = require("./middlewares/errorHandler.js");
+
+const app = express();
 app.use(express.json());
 
 // Configuración de Swagger
@@ -24,6 +26,15 @@ const swaggerOptions = {
                 url: "http://localhost:3000",
             },
         ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT",
+                },
+            },
+        },
     },
     apis: ["./rutas/*.js", "./models/*.js"], // Rutas donde se encuentran las definiciones de las API
 };
@@ -31,10 +42,24 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsDoc(swaggerOptions);
 
 // Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    swaggerOptions: {
+        authAction: {
+            bearerAuth: {
+                name: "Bearer",
+                schema: {
+                    type: "apiKey",
+                    in: "header",
+                    name: "Authorization",
+                },
+                value: "Bearer <your_token_here>",
+            },
+        },
+    },
+}));
 
 // Configuración de CORS
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = ["http://localhost:3000","http://localhost:3002"];
 app.use(
     cors({
         origin: allowedOrigins,
@@ -43,26 +68,31 @@ app.use(
     })
 );
 
-function verificarAutenticacion(req, res, next) {
-    const usuarioAutenticado = req.isAuthenticated ? req.isAuthenticated() : false; // Ejemplo de verificación
-    if (usuarioAutenticado) {
-        next();
+// Middleware de verificación de autenticación
+/* function verificarAutenticacion(req, res, next) {
+    const token = req.headers['authorization']?.split(' ')[1]; // Obtener el token del encabezado
+
+    if (token) {
+        jwt.verify(token, 'tu_clave_secreta', (err, user) => {
+            if (err) {
+                return res.sendStatus(403); // Prohibido
+            }
+            req.user = user; // Guardar el usuario en la solicitud
+            next();
+        });
     } else {
-        res.status(401).send("No estás autenticado");
+        res.sendStatus(401); // No autorizado
     }
-}
+} */
 
-app.use(verificarAutenticacion);
-
-// Ruta protegida
+// Rutas protegidas
+/* app.use(verificarAutenticacion); // Aplica la verificación de autenticación a todas las rutas siguientes
+ */
 app.get("/pagina-protegida", (req, res) => {
     res.send("Bienvenido a la página protegida");
 });
 
-
-
-//Rutas y middlewares
-//Middleware manejo de errrores
+// Rutas y middlewares
 app.use(errorHandler);
 
 // Rutas
