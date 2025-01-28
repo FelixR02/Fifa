@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken'); // Asegúrate de importar jsonwebtoken
 
 // Agregar un nuevo usuario
 async function addUsuario(data) {
-    const newUsuario = await Usuario.create(data);
+    const newUsuario = await Users.create(data);
     return newUsuario;
 }
 
@@ -46,12 +46,12 @@ async function iniciarSesion(email, password) {
 
 // Obtener todos los usuarios
 async function getUsuarios() {
-    return await Usuario.findAll();
+    return await Users.findAll();
 }
 
 // Obtener un usuario por ID
 async function getUsuarioForId(id) {
-    const usuario = await Usuario.findByPk(id);
+    const usuario = await Users.findByPk(id);
     if (!usuario) {
         throw new Error('User not found');
     }
@@ -60,22 +60,44 @@ async function getUsuarioForId(id) {
 
 // Actualizar un usuario
 const updateUsuario = async (id, data) => {
-    const usuario = await Usuario.findByPk(id);
+    const usuario = await Users.findByPk(id);
     if (usuario) {
-        return await usuario.update(data);
+        return await Users.update(data);
     }
     return null;
 };
 
 // Eliminar un usuario
 async function deleteUsuario(id) {
-    const eliminatedUsuario = await Usuario.destroy({
+    const eliminatedUsuario = await Users.destroy({
         where: { id },
     });
     if (!eliminatedUsuario) {
         throw new Error('User not found');
     }
 }
+
+async function obtenerPerfilUsuario(id) {
+    const usuario = await User.findByPk(id, {
+        attributes: { exclude: ['password'] }, 
+    });
+    
+    if (!usuario) {
+        throw new Error('Usuario no encontrado');
+    }
+    
+    return usuario;
+}
+
+async function invalidarRefreshToken(userId) {
+    const user = User.findByPk(userId);
+    if(user) { 
+        user.refreshToken = null;
+        await user.save();
+    }
+    return user;
+}
+
 
 module.exports = {
     addUsuario,
@@ -84,4 +106,6 @@ module.exports = {
     getUsuarioForId,
     updateUsuario,
     deleteUsuario,
+    obtenerPerfilUsuario,
+    invalidarRefreshToken
 };

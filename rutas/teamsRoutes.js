@@ -94,6 +94,40 @@ router.get('/:id', async (req, res) => {
 
 /**
  * @swagger
+ * /teams/{id}/players:
+ *   get:
+ *     summary: Get players of a specific team by team ID
+ *     tags: [Teams]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the team
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of players in the team
+ *       404:
+ *         description: Team not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/:id/players', async (req, res) => {
+    try {
+        const players = await teamsController.getPlayersByTeamId(req.params.id);
+        res.status(200).json(players);
+    } catch (error) {
+        if (error.message === 'Team not found') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: error.message });
+        }
+    }
+});
+
+/**
+ * @swagger
  * /teams/{id}:
  *   put:
  *     summary: Update a team

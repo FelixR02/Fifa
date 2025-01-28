@@ -10,11 +10,11 @@ const Players = sequelize.define("players", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
- goals: {
+  goals: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
- assists: {
+  assists: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -22,8 +22,13 @@ const Players = sequelize.define("players", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  teamId: { // Nueva columna para la relación
+    type: DataTypes.INTEGER,
+    allowNull: true, // Puede ser null si un jugador no está en un equipo
+  },
 }, {
   timestamps: true,
   paranoid: true,
 });
+
 module.exports = Players;

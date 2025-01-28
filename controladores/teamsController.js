@@ -1,4 +1,5 @@
 const Teams = require("../models/teams");
+const Players = require("../models/players");
 
 // Add new team
 async function addTeam(data) {
@@ -40,10 +41,21 @@ async function deleteTeam(id) {
     }
 }
 
+async function getPlayersByTeamId(teamId) {
+    const team = await Teams.findByPk(teamId, {
+        include: [{ model: Players, as: 'players' }], // Incluye los jugadores asociados
+    });
+    if (!team) {
+        throw new Error('Team not found');
+    }
+    return team.players; // Devuelve solo los jugadores del equipo
+}
+
 module.exports = {
     addTeam,
     getTeams,
     getTeamForId,
     updateTeam,
     deleteTeam,
+    getPlayersByTeamId,
 };

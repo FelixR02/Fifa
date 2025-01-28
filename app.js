@@ -99,7 +99,7 @@ app.use(errorHandler);
 app.use('/players', playersRoutes);
 app.use('/teams', teamsRoutes);
 app.use('/tournaments', tournamentsRoutes);
-app.use('/users', usersRoutes);
+app.use(usersRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hola, mundo");

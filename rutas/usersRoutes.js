@@ -61,7 +61,7 @@ const usersController = require('../controladores/usersController');
  *       400:
  *         description: Bad request
  */
-router.post('/usuarios', async (req, res) => {
+router.post('/crearUsuarios', async (req, res) => {
     try {
         const newUsuario = await usersController.addUsuario(req.body);
         res.status(201).json(newUsuario);
@@ -106,8 +106,8 @@ router.post('/usuarios', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const resultado = await usersController.iniciarSesion(email, password);
-        res.status(200).json(resultado);
+        const {accessToken, refreshToken} = await usersController.iniciarSesion(email, password);
+        res.status(200).json(accessToken, refreshToken);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -290,5 +290,27 @@ router.delete('/usuarios/:id', async (req, res) => {
         res.status(404).json({ error: error.message });
     }
 });
+
+router.get("/me", async (req, res, next) => {
+    console.log("pasepor session", req.userData);
+
+    try {
+        const usuario = await usersController.obtenerPerfilUsuario(req.userData.id);
+
+        res.status(200).json(usuario);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.post("/logout", async (req, res, next) => {
+    try {
+        await usersController.invalidarRefreshToken(req.userData.userId);
+        res.status(200).json({ message: 'Sesión cerrada exitosamente' });
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 module.exports = router;

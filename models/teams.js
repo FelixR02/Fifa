@@ -11,26 +11,20 @@ const Teams = sequelize.define("teams", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  capacity: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
 }, {
   timestamps: true,
   paranoid: true,
 });
+
+// Relación uno a muchos: Un equipo tiene muchos jugadores
+Teams.hasMany(Players, {
+  foreignKey: 'teamId', // Clave foránea en el modelo Players
+  onDelete: 'CASCADE', // Si se elimina un equipo, se eliminan sus jugadores
+  onUpdate: 'CASCADE', // Si se actualiza el ID del equipo, se actualiza en los jugadores
+});
+
+Players.belongsTo(Teams, {
+  foreignKey: 'teamId', // Clave foránea en el modelo Players
+});
+
 module.exports = Teams;
-
-
-// Relación uno a muchos con States
-Players.hasMany(Teams, {
-  foreignKey: 'playerId',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
-Teams.belongsTo(Players, {
-  foreignKey: 'stateId',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
-
