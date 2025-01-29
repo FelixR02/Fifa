@@ -8,9 +8,14 @@ async function addTeam(data) {
 }
 
 // Get all teams
-async function getTeams() {
-    return await Teams.findAll();
-}
+// En tu controlador de equipos (teamsController.js)
+async function getTeams(page = 1, limit = 10) {
+    const offset = (page - 1) * limit;
+    return await Teams.findAndCountAll({
+      limit: limit,
+      offset: offset,
+    });
+  }
 
 // Get a team for ID
 async function getTeamForId(id) {

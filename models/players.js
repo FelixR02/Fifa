@@ -22,9 +22,9 @@ const Players = sequelize.define("players", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  teamId: { // Nueva columna para la relación
+  teamId: { // Relación con Teams
     type: DataTypes.INTEGER,
-    allowNull: true, // Puede ser null si un jugador no está en un equipo
+    allowNull: true,
   },
 }, {
   timestamps: true,

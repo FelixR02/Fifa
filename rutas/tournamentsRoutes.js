@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const tournamentsController = require("../controladores/tournamentsController");
+const tournamentsController = require("../controladores/tournamentsController"); // Importación corregida
 
 /**
  * @swagger
@@ -161,9 +161,9 @@ router.delete('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /tournaments/{id}/add-players:
+ * /tournaments/{id}/add-teams:
  *   post:
- *     summary: Add players to a tournament
+ *     summary: Add teams to a tournament
  *     tags: [Tournaments]
  *     parameters:
  *       - name: id
@@ -179,16 +179,16 @@ router.delete('/:id', async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               playerIds:
+ *               teamsIds:
  *                 type: array
  *                 items:
  *                   type: integer
- *                 description: Array of player IDs to add to the tournament
+ *                 description: Array of team IDs to add to the tournament
  *     responses:
  *       200:
- *         description: Players added to the tournament successfully
+ *         description: Teams added to the tournament successfully
  *       404:
- *         description: Tournament or one or more players not found
+ *         description: Tournament or one or more teams not found
  *       400:
  *         description: Bad request
  */
@@ -205,6 +205,64 @@ router.post('/:tournamentId/add-teams', async (req, res) => {
         res.status(200).json(tournament);
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /tournaments/{id}/teams:
+ *   get:
+ *     summary: Get all teams in a tournament
+ *     tags: [Tournaments]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the tournament
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of teams in the tournament
+ *       404:
+ *         description: Tournament not found
+ */
+router.get('/:id/teams', async (req, res) => {
+    try {
+        const tournamentId = req.params.id;
+        const teams = await tournamentsController.getTeamsByTournamentId(tournamentId);
+        res.status(200).json(teams);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /tournaments/{id}/players:
+ *   get:
+ *     summary: Get all players in a tournament
+ *     tags: [Tournaments]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the tournament
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of players in the tournament
+ *       404:
+ *         description: Tournament not found
+ */
+router.get('/:id/players', async (req, res) => {
+    try {
+        const tournamentId = req.params.id;
+        const players = await tournamentsController.getPlayersByTournamentId(tournamentId);
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
     }
 });
 

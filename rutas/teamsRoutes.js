@@ -55,14 +55,22 @@ router.post('/', async (req, res) => {
  *       500:
  *         description: Internal server error
  */
+// En tu archivo de rutas (teamsRouter.js)
 router.get('/', async (req, res) => {
     try {
-        const teams = await teamsController.getTeams();
-        res.status(200).json(teams);
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const { count, rows: teams } = await teamsController.getTeams(page, limit);
+      res.status(200).json({
+        total: count,
+        page: page,
+        limit: limit,
+        teams: teams,
+      });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-});
+  });
 
 /**
  * @swagger

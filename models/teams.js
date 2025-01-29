@@ -11,6 +11,10 @@ const Teams = sequelize.define("teams", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  tournamentId: { // Nueva columna para la relación con Tournaments
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 }, {
   timestamps: true,
   paranoid: true,
