@@ -159,4 +159,53 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /tournaments/{id}/add-players:
+ *   post:
+ *     summary: Add players to a tournament
+ *     tags: [Tournaments]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the tournament
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               playerIds:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 description: Array of player IDs to add to the tournament
+ *     responses:
+ *       200:
+ *         description: Players added to the tournament successfully
+ *       404:
+ *         description: Tournament or one or more players not found
+ *       400:
+ *         description: Bad request
+ */
+router.post('/:tournamentId/add-teams', async (req, res) => {
+    try {
+        const { tournamentId } = req.params;
+        const { teamsIds } = req.body;
+
+        if (!teamsIds || !Array.isArray(teamsIds)) {
+            return res.status(400).json({ error: 'teamsIds must be an array' });
+        }
+
+        const tournament = await tournamentsController.addTeamsToTournament(tournamentId, teamsIds);
+        res.status(200).json(tournament);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
