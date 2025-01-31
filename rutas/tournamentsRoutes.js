@@ -43,18 +43,32 @@ router.post('/', async (req, res) => {
  * @swagger
  * /tournaments:
  *   get:
- *     summary: Get all tournaments
+ *     summary: Get all tournaments with pagination
  *     tags: [Tournaments]
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         required: false
+ *         description: Page number (default is 1)
+ *         schema:
+ *           type: integer
+ *       - name: limit
+ *         in: query
+ *         required: false
+ *         description: Number of items per page (default is 10)
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: List of tournaments
+ *         description: List of tournaments with pagination info
  *       500:
  *         description: Internal server error
  */
 router.get('/', async (req, res) => {
     try {
-        const tournaments = await tournamentsController.getTournaments();
-        res.status(200).json(tournaments);
+        const { page = 1, limit = 10 } = req.query;
+        const result = await tournamentsController.getTournaments(page, limit);
+        res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

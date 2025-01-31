@@ -10,8 +10,18 @@ async function addTournament(data) {
 }
 
 // Get all tournaments
-async function getTournaments() {
-    return await Tournaments.findAll();
+async function getTournaments(page = 1, limit = 10) {
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Tournaments.findAndCountAll({
+        limit: parseInt(limit),
+        offset: offset,
+    });
+
+    return {
+        tournaments: rows,
+        total: count,
+    };
 }
 
 // Get a tournament for ID

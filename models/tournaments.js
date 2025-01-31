@@ -8,6 +8,10 @@ const Tournaments = sequelize.define("tournaments", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
   timestamps: true,
   paranoid: true,
