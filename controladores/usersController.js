@@ -10,38 +10,55 @@ async function addUsuario(data) {
 
 // Función para iniciar sesión
 async function iniciarSesion(email, password) {
-    // Buscar el usuario por email
-    const usuario = await User.findOne({ where: { email } });
-    if (!usuario) {
-        throw new Error('Usuario no encontrado');
-    }
     
-                
-    // Comparar la contraseña hasheada con la contraseña de entrada
+   // console.log("Email recibido:", email); // Depuración
+    const usuario = await Users.findOne({ where: { email } });
+    if (!usuario) {
+      console.log("Usuario no encontrado"); // Depuración
+      throw new Error('Usuario no encontrado');
+    }
+  
+   // console.log("Contraseña recibida:", password); // Depuración
+   // console.log("Contraseña almacenada:", usuario.password); // Depuración
     const contrasenaValida = await bcrypt.compare(password, usuario.password);
     if (!contrasenaValida) {
-        throw new Error('Contraseña incorrecta');
+    //  console.log("Contraseña incorrecta"); // Depuración
+      throw new Error('Contraseña incorrecta');
     }
-
-    // Generar el token JWT
-    const token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    
-    // Generar el token de refresh
-    const refreshToken = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET_REFRESH, { expiresIn: '7d' });
-
-    // Retornar los tokens
-    return {
-        token,
-        refreshToken,
-        usuario: {
-            id: usuario.id,
-            email: usuario.email,
-            phone_number: usuario.phone_number,
-            username: usuario.username,
-            rol: usuario.rol,
-        },
+  
+   /* const payload = {
+      id: usuario.id,
+      first_name: usuario.first_name,
+      last_name: usuario.last_name,
+      email: usuario.email,
+      rol: usuario.rol,
     };
-}
+  
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: "1d" });
+  
+    console.log("Tokens generados:", { accessToken, refreshToken }); // Depuración
+  */ 
+    const accessToken = jwt.sign(
+        { 
+            id: usuario.id,
+            first_name: usuario.first_name,
+            last_name: usuario.last_name,
+            email: usuario.email,
+            rol: usuario.rol,     
+         }, process.env.JWT_SECRET,{expiresIn: "1h"});
+    const refreshToken = jwt.sign(
+        { 
+            id: usuario.id,
+            first_name: usuario.first_name,
+            last_name: usuario.last_name,
+            email: usuario.email,
+            rol: usuario.rol,     
+         }, process.env.JWT_REFRESH_SECRET,{expiresIn: "1h"});
+
+    
+    return { accessToken, refreshToken };
+  }
 
 
 // Obtener todos los usuarios
@@ -78,7 +95,7 @@ async function deleteUsuario(id) {
 }
 
 async function obtenerPerfilUsuario(id) {
-    const usuario = await User.findByPk(id, {
+    const usuario = await Users.findByPk(id, {
         attributes: { exclude: ['password'] }, 
     });
     
@@ -90,11 +107,13 @@ async function obtenerPerfilUsuario(id) {
 }
 
 async function invalidarRefreshToken(userId) {
-    const user = User.findByPk(userId);
-    if(user) { 
-        user.refreshToken = null;
-        await user.save();
+    const user = await Users.findByPk(userId);
+    if (!user) {
+        console.error('Usuario no encontrado');
+        return null;
     }
+    user.refreshToken = null;
+    await user.save();
     return user;
 }
 

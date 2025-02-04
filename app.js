@@ -8,7 +8,7 @@ const teamsRoutes = require("./rutas/teamsRoutes.js");
 const tournamentsRoutes = require("./rutas/tournamentsRoutes.js");
 const usersRoutes = require("./rutas/usersRoutes.js");
 const errorHandler = require("./middlewares/errorHandler.js");
-
+const requestLogger = require("./middlewares/requestLogger");
 const app = express();
 app.use(express.json());
 
@@ -68,33 +68,16 @@ app.use(
     })
 );
 
-// Middleware de verificación de autenticación
-/* function verificarAutenticacion(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1]; // Obtener el token del encabezado
-
-    if (token) {
-        jwt.verify(token, 'tu_clave_secreta', (err, user) => {
-            if (err) {
-                return res.sendStatus(403); // Prohibido
-            }
-            req.user = user; // Guardar el usuario en la solicitud
-            next();
-        });
-    } else {
-        res.sendStatus(401); // No autorizado
-    }
-} */
-
 // Rutas protegidas
-/* app.use(verificarAutenticacion); // Aplica la verificación de autenticación a todas las rutas siguientes
- */
+/*app.use(verificarAutenticacion); // Aplica la verificación de autenticación a todas las rutas siguientes
+
 app.get("/pagina-protegida", (req, res) => {
     res.send("Bienvenido a la página protegida");
-});
+});*/
 
 // Rutas y middlewares
 app.use(errorHandler);
-
+app.use(requestLogger);
 // Rutas
 app.use('/players', playersRoutes);
 app.use('/teams', teamsRoutes);

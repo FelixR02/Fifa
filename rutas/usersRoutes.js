@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controladores/usersController');
+const dotenv = require("dotenv").config();
+const authenticate = require("../helpers/authenticate");
 
 /**
  * @swagger
@@ -105,13 +107,13 @@ router.post('/crearUsuarios', async (req, res) => {
  */
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const {accessToken, refreshToken} = await usersController.iniciarSesion(email, password);
-        res.status(200).json(accessToken, refreshToken);
+      const { email, password } = req.body;
+      const { accessToken, refreshToken } = await usersController.iniciarSesion(email, password);
+      res.status(200).json({ accessToken, refreshToken }); // Asegúrate de devolver un objeto JSON
     } catch (error) {
-        res.status(400).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     }
-});
+  });
 
 /**
  * @swagger
@@ -291,8 +293,8 @@ router.delete('/usuarios/:id', async (req, res) => {
     }
 });
 
-router.get("/me", async (req, res, next) => {
-    console.log("pasepor session", req.userData);
+router.get("/me",authenticate(["administrador", "usuario"]), async (req, res, next) => {
+   // console.log("pasepor session", req.userData);
 
     try {
         const usuario = await usersController.obtenerPerfilUsuario(req.userData.id);
@@ -303,9 +305,10 @@ router.get("/me", async (req, res, next) => {
     }
 });
 
-router.post("/logout", async (req, res, next) => {
+router.post("/logout",authenticate(["administrador", "usuario"]), async (req, res, next) => {
     try {
-        await usersController.invalidarRefreshToken(req.userData.userId);
+        console.log(req.userData);
+        await usersController.invalidarRefreshToken(req.userData.id);
         res.status(200).json({ message: 'Sesión cerrada exitosamente' });
     } catch (error) {
         next(error);
