@@ -206,9 +206,9 @@ router.delete('/:id', async (req, res) => {
  *       400:
  *         description: Bad request
  */
-router.post('/:tournamentId/add-teams', async (req, res) => {
+router.post('/:id/add-teams', async (req, res) => {
     try {
-        const { tournamentId } = req.params;
+        const tournamentId = req.params.id; // Obtener ID del torneo de los parámetros
         const { teamsIds } = req.body;
 
         if (!teamsIds || !Array.isArray(teamsIds)) {
@@ -280,4 +280,34 @@ router.get('/:id/players', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /tournaments/{id}/remove-team/{teamId}:
+ *   delete:
+ *     summary: Remove a team from tournament
+ *     tags: [Tournaments]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Tournament ID
+ *       - name: teamId
+ *         in: path
+ *         required: true
+ *         description: Team ID to remove
+ *     responses:
+ *       204:
+ *         description: Team removed successfully
+ *       404:
+ *         description: Team not found or not in tournament
+ */
+router.delete('/:id/remove-team/:teamId', async (req, res) => {
+    try {
+        await tournamentsController.deleteTeamFromTournament(req.params.id, req.params.teamId);
+        res.status(204).send();
+    } catch (error) {
+        console.error('Error in delete route:', error); // Log del error
+        res.status(404).json({ error: error.message });
+    }
+});
 module.exports = router;

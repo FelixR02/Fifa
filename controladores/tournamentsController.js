@@ -136,6 +136,40 @@ async function getPlayersByTournamentId(tournamentId) {
     }
 }
 
+async function deleteTeamFromTournament(tournamentId, teamId) {
+    console.log("Deleting team from tournament:", tournamentId, teamId);
+
+    try {
+        // Verificar que el equipo pertenece al torneo
+        const team = await Teams.findOne({
+            where: {
+                id: teamId,
+                tournamentId: tournamentId
+            }
+        });
+
+        if (!team) {
+            throw new Error('El equipo no está registrado en este torneo');
+        }
+
+        // Quitar el torneo del equipo
+        await team.update({ tournamentId: null });
+
+        // Quitar a los jugadores del torneo
+        await Players.update(
+            { tournamentId: null },
+            {
+                where: { teamId: teamId }
+            }
+        );
+
+        return true;
+    } catch (error) {
+        console.error('Error in deleteTeamFromTournament:', error);
+        throw error; // Lanza el error para que pueda ser manejado en la ruta
+    }
+}
+
 module.exports = {
     addTournament,
     getTournaments,
@@ -145,4 +179,5 @@ module.exports = {
     addTeamsToTournament,
     getTeamsByTournamentId, 
     getPlayersByTournamentId, 
+    deleteTeamFromTournament,
 };
