@@ -59,7 +59,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 }));
 
 // Configuración de CORS
-const allowedOrigins = ["http://localhost:3000","http://localhost:3002"];
+const allowedOrigins = ["http://localhost:3000","http://localhost:3002", "https://fronted-fifa.onrender.com"];
 app.use(
     cors({
         origin: allowedOrigins,
