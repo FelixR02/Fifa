@@ -25,5 +25,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
+    "build": "echo 'No build step required'",  // Cambia esto si necesitas un proceso de construcción
+    "serve": "node app.js"  // Comando para ejecutar el proyecto construido
   }
 }
