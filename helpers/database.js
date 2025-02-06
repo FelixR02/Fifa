@@ -8,11 +8,13 @@ const password = process.env.DB_PASSWORD;
 const user = process.env.DB_USER;
 const dialect = process.env.DB_DIALECT;
 const host = process.env.HOST;
-
+const PORT = process.env.PORT;
+ 
 // conexión a la base de datos
 const sequelize = new Sequelize(DB_NAME, user, password, {
     host: host,
     dialect: dialect,
+    port: PORT,
     logging: false,
   });
 
