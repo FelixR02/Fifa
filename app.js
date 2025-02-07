@@ -23,7 +23,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: "http://localhost:3000", "https://fifa-u40o.onrender.com"
+                url: ["http://localhost:3000", "https://fifa-u40o.onrender.com"]
             },
         ],
         components: {
