@@ -65,6 +65,7 @@ const authenticate = require("../helpers/authenticate");
  */
 router.post('/crearUsuarios', async (req, res) => {
     try {
+        console.log(req.body);
         const newUsuario = await usersController.addUsuario(req.body);
         res.status(201).json(newUsuario);
     } catch (error) {
