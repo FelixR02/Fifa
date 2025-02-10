@@ -13,7 +13,7 @@ const authenticate = require("../helpers/authenticate");
 
 /**
  * @swagger
- * /usuarios:
+ * /crearUsuarios:
  *   post:
  *     summary: Add a new user
  *     tags: [Users]
